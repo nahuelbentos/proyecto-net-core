@@ -1,7 +1,10 @@
 
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Aplicacion.ManejadorError;
+using FluentValidation;
 using MediatR;
 using Persistencia;
 
@@ -21,6 +24,17 @@ namespace Aplicacion.Cursos
       public DateTime? FechaPublicacion { get; set; }
     }
 
+
+    public class EjecutaValidacion : AbstractValidator<Ejecuta>
+    {
+      public EjecutaValidacion()
+      {
+        RuleFor(x => x.Titulo).NotEmpty().WithMessage("El titulo es requerido papu");
+        RuleFor(x => x.Descripcion).NotEmpty();
+        RuleFor(x => x.FechaPublicacion).NotEmpty();
+      }
+    }
+
     public class Manejador : IRequestHandler<Ejecuta>
     {
       private readonly CursosOnlineContext _context;
@@ -36,7 +50,9 @@ namespace Aplicacion.Cursos
 
         if (curso == null)
         {
-          throw new Exception("El curso no existe");
+
+          throw new ManejadorExcepcion(HttpStatusCode.NotFound, new { mensaje = "El curso no existe" });
+
         }
 
         curso.Titulo = request.Titulo ?? curso.Titulo;

@@ -1,6 +1,8 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Aplicacion.ManejadorError;
 using MediatR;
 using Persistencia;
 
@@ -27,7 +29,9 @@ namespace Aplicacion.Cursos
         var curso = await this.context.Curso.FindAsync(request.Id);
 
         if (curso == null)
-          throw new Exception("No existe el curso con el id: " + request.Id);
+        {
+          throw new ManejadorExcepcion(HttpStatusCode.NotFound, new { mensaje = "No se encontro el curso con el id: " + request.Id });
+        }
 
         this.context.Remove(curso);
 
