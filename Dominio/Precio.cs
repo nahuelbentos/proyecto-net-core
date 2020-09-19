@@ -1,11 +1,19 @@
-namespace Dominio {
-    public class Precio {
-        public int PrecioId { get; set; }
-        public decimal PrecioActual { get; set; }
-        public decimal Promocion { get; set; }
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
-        public int CursoId { get; set; }
+namespace Dominio
+{
+  public class Precio
+  {
+    public Guid PrecioId { get; set; }
+    [Column(TypeName = "decimal(18,4)")]
+    public decimal PrecioActual { get; set; }
 
-        public Curso Curso { get; set; }
-    }
+    [Column(TypeName = "decimal(18,4)")]
+    public decimal Promocion { get; set; }
+
+    public Guid CursoId { get; set; }
+
+    public Curso Curso { get; set; }
+  }
 }
