@@ -1,3 +1,4 @@
+using System.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using Dominio;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -19,9 +21,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Persistencia;
 using Seguridad;
 using WebAPI.Middleware;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace WebAPI
 {
@@ -45,7 +50,13 @@ namespace WebAPI
 
       services.AddMediatR(typeof(Consulta.Manejador).Assembly);
 
-      services.AddControllers().AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Nuevo>());
+      services.AddControllers(opt =>
+      {
+        // Declaro politica para requerir Autenticación y la agrego como filtro.
+        var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+        opt.Filters.Add(new AuthorizeFilter(policy));
+      })
+          .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Nuevo>());
 
       var builder = services.AddIdentityCore<Usuario>();
       var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
@@ -55,7 +66,22 @@ namespace WebAPI
 
       services.TryAddSingleton<ISystemClock, SystemClock>();
 
+      // Configuración para los JWT Tokens
+      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Mi palabra secreta"));
+      services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+      {
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+          ValidateIssuerSigningKey = true,
+          IssuerSigningKey = key,
+          ValidateAudience = false, // Alguien con una IP cualquiera pueda generar un Token
+          ValidateIssuer = false, // Es para el envio del token (?)
+        };
+      });
+
       services.AddScoped<IJwtGenerador, JwtGenerador>();
+      services.AddScoped<IUsuarioSesion, UsuarioSesion>();
+
 
     }
 
@@ -71,6 +97,9 @@ namespace WebAPI
       }
 
       // app.UseHttpsRedirection();
+
+      // Con la siguiente linea declaro que mi aplicación va a utilizar la autenticación por Tokens
+      app.UseAuthentication();
 
       app.UseRouting();
 
