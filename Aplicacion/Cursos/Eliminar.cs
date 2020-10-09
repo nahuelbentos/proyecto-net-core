@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace Aplicacion.Cursos
   {
     public class Ejecuta : IRequest
     {
-      public int Id { get; set; }
+      public Guid Id { get; set; }
     }
 
     public class Manejador : IRequestHandler<Ejecuta>
@@ -26,6 +27,27 @@ namespace Aplicacion.Cursos
 
       public async Task<Unit> Handle(Ejecuta request, CancellationToken cancellationToken)
       {
+        var instructoresBD = this.context.CursoInstructor.Where(c => c.CursoId == request.Id);
+
+        foreach (var instructor in instructoresBD)
+        {
+          this.context.CursoInstructor.Remove(instructor);
+        }
+
+        var comentariosBD = this.context.Comentario.Where(c => c.CursoId == request.Id);
+
+        foreach (var comentario in comentariosBD)
+        {
+          this.context.Comentario.Remove(comentario);
+        }
+
+        var precioBD = this.context.Precio.Where(c => c.CursoId == request.Id).FirstOrDefault();
+
+        if (precioBD != null)
+        {
+          this.context.Precio.Remove(precioBD);
+        }
+
         var curso = await this.context.Curso.FindAsync(request.Id);
 
         if (curso == null)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,11 @@ namespace Aplicacion.Cursos
       public string Titulo { get; set; }
       public string Descripcion { get; set; }
       public DateTime? FechaPublicacion { get; set; }
+
+      public List<Guid> ListaInstructor { get; set; }
+
+      public decimal Precio { get; set; }
+      public decimal Promocion { get; set; }
     }
 
     public class EjecutaValidacion : AbstractValidator<Ejecuta>
@@ -40,14 +46,45 @@ namespace Aplicacion.Cursos
 
       public async Task<Unit> Handle(Ejecuta request, CancellationToken cancellationToken)
       {
+        Guid cursoId = Guid.NewGuid();
+
         var curso = new Curso
         {
+          CursoId = cursoId,
           Titulo = request.Titulo,
           Descripcion = request.Descripcion,
           FechaPublicacion = request.FechaPublicacion
         };
 
         _context.Curso.Add(curso);
+
+        if (request.ListaInstructor != null)
+        {
+
+          foreach (var id in request.ListaInstructor)
+          {
+            var cursoInstructor = new CursoInstructor
+            {
+              CursoId = cursoId,
+              InstructorId = id
+            };
+
+            this._context.CursoInstructor.Add(cursoInstructor);
+          }
+
+        }
+
+        var precioEntidad = new Precio
+        {
+          CursoId = cursoId,
+          PrecioActual = request.Precio,
+          Promocion = request.Promocion,
+          PrecioId = Guid.NewGuid()
+        };
+
+        this._context.Precio.Add(precioEntidad);
+
+
 
         // Devuelve la cantidad de transacciones que se realizaron. 
         // Si se devuelve 0, ocurrio algun error.

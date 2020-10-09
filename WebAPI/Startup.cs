@@ -27,6 +27,7 @@ using Seguridad;
 using WebAPI.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using AutoMapper;
 
 namespace WebAPI
 {
@@ -81,6 +82,9 @@ namespace WebAPI
 
       services.AddScoped<IJwtGenerador, JwtGenerador>();
       services.AddScoped<IUsuarioSesion, UsuarioSesion>();
+
+
+      services.AddAutoMapper(typeof(Consulta.Manejador));
 
 
     }
