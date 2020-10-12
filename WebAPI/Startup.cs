@@ -28,6 +28,8 @@ using WebAPI.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using AutoMapper;
+using Persistencia.DapperConexion;
+using Persistencia.DapperConexion.Instructor;
 
 namespace WebAPI
 {
@@ -48,6 +50,10 @@ namespace WebAPI
       {
         opt.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
       });
+
+      services.Configure<ConexionConfiguracion>(this.Configuration.GetSection("ConnectionStrings"));
+      services.AddOptions();
+
 
       services.AddMediatR(typeof(Consulta.Manejador).Assembly);
 
@@ -85,6 +91,11 @@ namespace WebAPI
 
 
       services.AddAutoMapper(typeof(Consulta.Manejador));
+
+      services.AddTransient<IFactoryConnection, FactoryConnection>();
+      services.AddScoped<IInstructor, InstructorRepositorio>();
+
+
 
 
     }
