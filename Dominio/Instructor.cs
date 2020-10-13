@@ -14,6 +14,8 @@ namespace Dominio
 
     public byte[] FotoPerfil { get; set; }
 
+    public DateTime? FechaCreacion { get; set; }
+
     public ICollection<CursoInstructor> CursoLink { get; set; }
   }
 }

@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using AutoMapper;
 using Persistencia.DapperConexion;
 using Persistencia.DapperConexion.Instructor;
+using Microsoft.OpenApi.Models;
 
 namespace WebAPI
 {
@@ -95,6 +96,18 @@ namespace WebAPI
       services.AddTransient<IFactoryConnection, FactoryConnection>();
       services.AddScoped<IInstructor, InstructorRepositorio>();
 
+      // Configuración de Swagger
+      services.AddSwaggerGen(c =>
+      {
+        c.SwaggerDoc("v1", new OpenApiInfo
+        {
+          Title = "Servicios para mantenimineto de cursos",
+          Version = "v1"
+        });
+
+        c.CustomSchemaIds(c => c.FullName);
+      });
+
 
 
 
@@ -123,6 +136,12 @@ namespace WebAPI
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
+      });
+
+      app.UseSwagger();
+      app.UseSwaggerUI(c =>
+      {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cursos online v1");
       });
     }
   }

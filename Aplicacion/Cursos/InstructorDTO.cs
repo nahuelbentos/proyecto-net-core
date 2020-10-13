@@ -2,8 +2,8 @@ using System;
 
 namespace Aplicacion.Cursos
 {
-    public class InstructorDTO
-    {
+  public class InstructorDTO
+  {
 
     public Guid InstructorId { get; set; }
 
@@ -12,7 +12,8 @@ namespace Aplicacion.Cursos
     public string Apellidos { get; set; }
 
     public string Grado { get; set; }
+    public DateTime? FechaCreacion { get; set; }
 
     public byte[] FotoPerfil { get; set; }
-    }
+  }
 }
