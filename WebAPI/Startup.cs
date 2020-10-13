@@ -31,6 +31,7 @@ using AutoMapper;
 using Persistencia.DapperConexion;
 using Persistencia.DapperConexion.Instructor;
 using Microsoft.OpenApi.Models;
+using Persistencia.DapperConexion.Paginacion;
 
 namespace WebAPI
 {
@@ -95,6 +96,7 @@ namespace WebAPI
 
       services.AddTransient<IFactoryConnection, FactoryConnection>();
       services.AddScoped<IInstructor, InstructorRepositorio>();
+      services.AddScoped<IPaginacion, PaginacionRepositorio>();
 
       // Configuración de Swagger
       services.AddSwaggerGen(c =>
