@@ -67,8 +67,13 @@ namespace WebAPI
       })
           .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Nuevo>());
 
+      // Configuración de IdentityCore
       var builder = services.AddIdentityCore<Usuario>();
       var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+
+      //Configuración de roles y Rol con Tokens -> Ademas instanciamos el servicio de RoleManager
+      identityBuilder.AddRoles<IdentityRole>();
+      identityBuilder.AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Usuario, IdentityRole>>();
 
       identityBuilder.AddEntityFrameworkStores<CursosOnlineContext>();
       identityBuilder.AddSignInManager<SignInManager<Usuario>>();
