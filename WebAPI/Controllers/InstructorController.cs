@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aplicacion.Instructores;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistencia.DapperConexion.Instructor;
 
@@ -11,6 +12,7 @@ namespace WebAPI.Controllers
   public class InstructorController : MiControllerBase
   {
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<List<InstructorModel>>> ObtenerInstructores()
     {
 
