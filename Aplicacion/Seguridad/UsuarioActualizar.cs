@@ -21,8 +21,7 @@ namespace Aplicacion.Seguridad
     {
 
 
-      public string Nombre { get; set; }
-      public string Apellidos { get; set; }
+      public string NombreCompleto { get; set; }
       public string Email { get; set; }
       public string Password { get; set; }
       public string Username { get; set; }
@@ -32,8 +31,7 @@ namespace Aplicacion.Seguridad
     {
       public EjecutaValidator()
       {
-        RuleFor(u => u.Nombre).NotEmpty();
-        RuleFor(u => u.Apellidos).NotEmpty();
+        RuleFor(u => u.NombreCompleto).NotEmpty();
         RuleFor(u => u.Email).NotEmpty();
         RuleFor(u => u.Password).NotEmpty();
         RuleFor(u => u.Username).NotEmpty();
@@ -71,7 +69,7 @@ namespace Aplicacion.Seguridad
           throw new ManejadorExcepcion(HttpStatusCode.InternalServerError, new { mensaje = "Ya existe ese mail en otro usuario" });
         }
 
-        user.NombreCompleto = request.Nombre + " " + request.Apellidos;
+        user.NombreCompleto = request.NombreCompleto;
         user.PasswordHash = this.passwordHasher.HashPassword(user, request.Password);
         user.Email = request.Email;
 
