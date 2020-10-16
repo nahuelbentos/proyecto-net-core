@@ -31,13 +31,15 @@ export const actualizarUsuario = (usuario) =>
     httpClient
       .put('/usuario', usuario)
       .then((response) => resolve(response))
-      .catch((error) => reject(error))
+      .catch((error) => reject(error.response))
   );
 
 export const loginUsuario = (usuario) =>
-  new Promise((resolve, reject) =>
-    httpClient
-      .post('/usuario/login', usuario)
-      .then((response) => resolve(response))
-      .catch((error) => reject(error))
+  new Promise(
+    (resolve, reject) =>
+      httpClient
+        .post('/usuario/login', usuario)
+        .then((response) => resolve(response))
+        .catch((error) => resolve(error.response))
+    // .catch((error) => resolve(error.response)) // No se porque no lo resuelve con un reject, pero bue
   );

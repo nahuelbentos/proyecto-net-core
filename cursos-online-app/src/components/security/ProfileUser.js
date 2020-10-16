@@ -24,7 +24,30 @@ const ProfileUser = () => {
 
   const guardarCambios = (element) => {
     element.preventDefault();
-    actualizarUsuario(usuario).then((response) => localStorage.setItem('token_seguridad', response.data.token));
+    actualizarUsuario(usuario)
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch({
+            type: 'OPEN_SNACKBAR',
+            openMensaje: {
+              open: true,
+              mensaje: 'Se guardaron exitosamente los cambios en Perfil Usuario',
+            },
+          });
+        }
+
+        localStorage.setItem('token_seguridad', response.data.token);
+      })
+      .catch((error) => {
+        console.log('error: ', error);
+        dispatch({
+          type: 'OPEN_SNACKBAR',
+          openMensaje: {
+            open: true,
+            mensaje: 'Errores al intentar guardar en : ' + Object.keys(error.data.errors),
+          },
+        });
+      });
   };
 
   useEffect(() => {
