@@ -10,3 +10,34 @@ export const registrarUsuario = (usuario) => {
       .catch((error) => reject(error));
   });
 };
+
+export const obtenerUsuarioActual = (dispatch) =>
+  new Promise((resolve, reject) =>
+    httpClient
+      .get('/usuario')
+      .then((response) => {
+        dispatch({
+          type: 'INICIAR_SESION',
+          sesion: response.data,
+          autenticado: true,
+        });
+        resolve(response);
+      })
+      .catch((error) => reject(error))
+  );
+
+export const actualizarUsuario = (usuario) =>
+  new Promise((resolve, reject) =>
+    httpClient
+      .put('/usuario', usuario)
+      .then((response) => resolve(response))
+      .catch((error) => reject(error))
+  );
+
+export const loginUsuario = (usuario) =>
+  new Promise((resolve, reject) =>
+    httpClient
+      .post('/usuario/login', usuario)
+      .then((response) => resolve(response))
+      .catch((error) => reject(error))
+  );
