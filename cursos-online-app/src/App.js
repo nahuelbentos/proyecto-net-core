@@ -10,6 +10,7 @@ import { useStateValue } from './context/store';
 import { obtenerUsuarioActual } from './actions/UsuarioAction';
 import AppNavbar from './components/navigation/AppNavbar';
 import SecureRoute from './components/navigation/SecureRoute';
+import NuevoCurso from './components/cursos/NuevoCurso';
 
 function App() {
   const [{ sesionUsuario, openSnackbar }, dispatch] = useStateValue();
@@ -51,6 +52,7 @@ function App() {
               <Route exact path="/auth/register" component={RegisterUser} />
 
               <SecureRoute exact path="/auth/profile" component={ProfileUser} />
+              <SecureRoute exact path="/curso/nuevo" component={NuevoCurso} />
               <SecureRoute exact path="" component={ProfileUser} />
             </Switch>
           </Grid>
