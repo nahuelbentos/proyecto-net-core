@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import style from '../tools/style';
-import { Button, Container, Grid, TextField, Typography } from '@material-ui/core';
+import { Avatar, Button, Container, Grid, TextField, Typography } from '@material-ui/core';
 import { actualizarUsuario, obtenerUsuarioActual } from '../../actions/UsuarioAction';
 import { useStateValue } from '../../context/store';
+import reactFoto from '../../logo.svg';
+import { v4 as uuidv4 } from 'uuid';
+import ImageUploader from 'react-images-upload';
+import { obtenerDataImagen } from '../../actions/ImagenAction';
+
 const ProfileUser = () => {
   const [{ sesionUsuario }, dispatch] = useStateValue();
 
@@ -12,6 +17,8 @@ const ProfileUser = () => {
     userName: '',
     password: '',
     confirmarPaswword: '',
+    imagenPerfil: null,
+    fotoUrl: '',
   });
 
   const ingresarValoresMemoria = (e) => {
@@ -22,9 +29,33 @@ const ProfileUser = () => {
     }));
   };
 
+  useEffect(() => {
+    setUsuario(sesionUsuario.usuario);
+    setUsuario((anterior) => ({
+      ...anterior,
+      fotoUrl: sesionUsuario.usuario.imagenPerfil,
+    }));
+  }, []);
+
+  const subirFoto = (imagenes) => {
+    const foto = imagenes[0];
+    const fotoUrl = URL.createObjectURL(foto);
+
+    console.log(foto);
+    obtenerDataImagen(foto).then((imagenPerfil) =>
+      setUsuario((anterior) => ({
+        ...anterior,
+        imagenPerfil, // el archivo en Formato json { data, nombre, extension}
+        fotoUrl, // el archivo en formato url
+      }))
+    );
+  };
+
+  const fotoKey = uuidv4();
+
   const guardarCambios = (element) => {
     element.preventDefault();
-    actualizarUsuario(usuario)
+    actualizarUsuario(usuario, dispatch)
       .then((response) => {
         if (response.status === 200) {
           dispatch({
@@ -50,18 +81,15 @@ const ProfileUser = () => {
       });
   };
 
-  useEffect(() => {
-    obtenerUsuarioActual(dispatch).then((response) => setUsuario(response.data));
-  }, []);
-
   return (
-    <div>
-      <Container component="main" maxWidth="md" justify="center">
-        <div style={style.paper}>
-          <Typography component="h1" variant="h5">
-            Perfil de Usuario
-          </Typography>
-        </div>
+    <Container component="main" maxWidth="md" justify="center">
+      <div style={style.paper}>
+        <Avatar style={style.avatar} src={usuario.fotoUrl || reactFoto}></Avatar>
+
+        <Typography component="h1" variant="h5">
+          Perfil de Usuario
+        </Typography>
+
         <form style={style.form}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
@@ -120,6 +148,18 @@ const ProfileUser = () => {
                 onChange={ingresarValoresMemoria}
               />
             </Grid>
+
+            <Grid item xs={12} md={12}>
+              <ImageUploader
+                withIcon={false}
+                key={fotoKey}
+                singleImage={true}
+                buttonText="Seleccione una imagen de perfil"
+                onChange={subirFoto}
+                imgExtension={['.jpg', '.gif', '.png', '.jpeg']}
+                maxFileSize={5242880}
+              />
+            </Grid>
           </Grid>
           <Grid container justify="center">
             <Grid item xs={12} md={6}>
@@ -137,8 +177,8 @@ const ProfileUser = () => {
             </Grid>
           </Grid>
         </form>
-      </Container>
-    </div>
+      </div>
+    </Container>
   );
 };
 

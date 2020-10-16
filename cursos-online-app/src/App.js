@@ -18,16 +18,12 @@ function App() {
   useEffect(() => {
     if (!iniciaApp) {
       obtenerUsuarioActual(dispatch)
-        .then((response) => {
-          setIniciaApp(true);
-        })
-        .catch((error) => {
-          setIniciaApp(true);
-        });
+        .then((response) => setIniciaApp(true))
+        .catch((error) => setIniciaApp(true));
     }
   }, [iniciaApp]);
 
-  return (
+  return !iniciaApp ? null : (
     <React.Fragment>
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}

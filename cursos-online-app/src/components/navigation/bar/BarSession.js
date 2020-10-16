@@ -79,7 +79,7 @@ const BarSession = (props) => {
         <div className={classes.seccionDesktop}>
           <Button color="inherit"> Salir</Button>
           <Button color="inherit"> {sesionUsuario ? sesionUsuario.usuario.nombreCompleto : ''} </Button>
-          <Avatar src={FotoUsuarioTemp}></Avatar>
+          <Avatar src={sesionUsuario.usuario.imagenPerfil || FotoUsuarioTemp}></Avatar>
         </div>
         <div className={classes.seccionMobile}>
           <IconButton color="inherit" onClick={openMenuRightAction}>

@@ -19,6 +19,7 @@ namespace Persistencia
     public DbSet<Comentario> Comentario { get; set; }
     public DbSet<Instructor> Instructor { get; set; }
     public DbSet<CursoInstructor> CursoInstructor { get; set; }
+    public DbSet<Documento> Documento { get; set; }
 
   }
 }

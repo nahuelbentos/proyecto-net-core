@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace Aplicacion.Seguridad
       public string Email { get; set; }
       public string Password { get; set; }
       public string Username { get; set; }
+      public ImagenGeneral ImagenPerfil { get; set; }
 
     }
     public class EjecutaValidator : AbstractValidator<Ejecuta>
@@ -68,16 +70,59 @@ namespace Aplicacion.Seguridad
         {
           throw new ManejadorExcepcion(HttpStatusCode.InternalServerError, new { mensaje = "Ya existe ese mail en otro usuario" });
         }
+        if (request.ImagenPerfil != null)
+        {
+
+          var userIdGuid = new Guid(user.Id);
+          var resultadoImagen = await this.context.Documento.Where(d => d.ObjetoReferencia == userIdGuid).FirstOrDefaultAsync();
+
+          if (resultadoImagen == null)
+          {
+
+            var imagen = new Documento
+            {
+              DocumentoId = Guid.NewGuid(),
+              Contenido = Convert.FromBase64String(request.ImagenPerfil.Data),
+              Nombre = request.ImagenPerfil.Nombre,
+              Extension = request.ImagenPerfil.Extension,
+              ObjetoReferencia = userIdGuid,
+              FechaCreacion = DateTime.UtcNow
+            };
+
+            await this.context.Documento.AddAsync(imagen);
+          }
+          else
+          {
+            resultadoImagen.Contenido = Convert.FromBase64String(request.ImagenPerfil.Data);
+            resultadoImagen.Nombre = request.ImagenPerfil.Nombre;
+            resultadoImagen.Extension = request.ImagenPerfil.Extension;
+            resultadoImagen.ObjetoReferencia = userIdGuid;
+          }
+
+          await this.context.SaveChangesAsync(); //???
+
+
+        }
 
         user.NombreCompleto = request.NombreCompleto;
         user.PasswordHash = this.passwordHasher.HashPassword(user, request.Password);
         user.Email = request.Email;
-
         var resultado = await this.userManager.UpdateAsync(user);
 
 
         if (resultado.Succeeded)
         {
+          var imagenPerfil = await this.context.Documento.Where(x => x.ObjetoReferencia == new Guid(user.Id)).FirstOrDefaultAsync();
+          ImagenGeneral imagenUsuario = null;
+          if (imagenPerfil != null)
+          {
+            imagenUsuario = new ImagenGeneral
+            {
+              Data = Convert.ToBase64String(imagenPerfil.Contenido),
+              Nombre = imagenPerfil.Nombre,
+              Extension = imagenPerfil.Extension
+            };
+          }
 
           var roles = await this.userManager.GetRolesAsync(user);
 
@@ -86,7 +131,8 @@ namespace Aplicacion.Seguridad
             NombreCompleto = user.NombreCompleto,
             Email = user.Email,
             UserName = user.UserName,
-            Token = this.jwtGenerador.CrearToken(user, new List<string>(roles))
+            Token = this.jwtGenerador.CrearToken(user, new List<string>(roles)),
+            ImagenPerfil = imagenUsuario
           };
         }
 
