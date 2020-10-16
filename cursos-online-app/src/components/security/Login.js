@@ -4,8 +4,12 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import style from '../tools/style';
 import { loginUsuario } from '../../actions/UsuarioAction';
+import { withRouter } from 'react-router-dom';
+import { useStateValue } from '../../context/store';
 
-const Login = () => {
+const Login = (props) => {
+  const [{ sesionUsuario }, dispatch] = useStateValue();
+
   const [usuario, setUsuario] = useState({
     email: '',
     password: '',
@@ -22,12 +26,21 @@ const Login = () => {
   const login = (e) => {
     e.preventDefault();
     console.log('voy a loguear el problema');
-    loginUsuario(usuario)
+    loginUsuario(usuario, dispatch)
       .then((response) => {
-        console.log('Se logueo el usuario exitosamente', response);
         localStorage.setItem('token_seguridad', response.data.token);
+        props.history.push('/');
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log('el error es: ', error);
+        dispatch({
+          type: 'OPEN_SNACKBAR',
+          openMensaje: {
+            open: true,
+            mensaje: 'Las credenciales del usuario son incorrectas',
+          },
+        });
+      });
     // loginUsuario(usuario).then((response) => localStorage.setItem('token_seguridad', response.data.token));
   };
 
@@ -69,4 +82,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withRouter(Login);

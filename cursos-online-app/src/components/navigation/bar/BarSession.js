@@ -52,6 +52,13 @@ const BarSession = (props) => {
 
   const salirSessionApp = () => {
     localStorage.removeItem('token_seguridad');
+
+    dispatch({
+      type: 'SALIR_SESION',
+      nuevoUsuario: null,
+      autenticado: false,
+    });
+
     props.history.push('/auth/login');
   };
 
@@ -65,7 +72,7 @@ const BarSession = (props) => {
 
       <Drawer open={openMenuRight} onClose={closeRightMenu} anchor="right">
         <div role="button" onKeyDown={closeRightMenu} onClick={closeRightMenu}>
-          <RightMenu classes={classes} salirSession={salirSessionApp} usuario={sesionUsuario ? sesionUsuario.usuario : null}></RightMenu>
+          <RightMenu classes={classes} usuario={sesionUsuario ? sesionUsuario.usuario : null} salirSession={salirSessionApp}></RightMenu>
         </div>
       </Drawer>
 
@@ -77,7 +84,9 @@ const BarSession = (props) => {
         <Typography variant="h6">Cursos Online</Typography>
         <div className={classes.grow}></div>
         <div className={classes.seccionDesktop}>
-          <Button color="inherit"> Salir</Button>
+          <Button color="inherit" onClick={salirSessionApp}>
+            Salir
+          </Button>
           <Button color="inherit"> {sesionUsuario ? sesionUsuario.usuario.nombreCompleto : ''} </Button>
           <Avatar src={sesionUsuario.usuario.imagenPerfil || FotoUsuarioTemp}></Avatar>
         </div>

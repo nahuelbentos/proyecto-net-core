@@ -9,6 +9,7 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { useStateValue } from './context/store';
 import { obtenerUsuarioActual } from './actions/UsuarioAction';
 import AppNavbar from './components/navigation/AppNavbar';
+import SecureRoute from './components/navigation/SecureRoute';
 
 function App() {
   const [{ sesionUsuario, openSnackbar }, dispatch] = useStateValue();
@@ -48,8 +49,9 @@ function App() {
             <Switch>
               <Route exact path="/auth/login" component={Login} />
               <Route exact path="/auth/register" component={RegisterUser} />
-              <Route exact path="/auth/profile" component={ProfileUser} />
-              <Route exact path="" component={ProfileUser} />
+
+              <SecureRoute exact path="/auth/profile" component={ProfileUser} />
+              <SecureRoute exact path="" component={ProfileUser} />
             </Switch>
           </Grid>
         </MuiThemeProvider>

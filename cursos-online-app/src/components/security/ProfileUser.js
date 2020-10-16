@@ -34,6 +34,7 @@ const ProfileUser = () => {
     setUsuario((anterior) => ({
       ...anterior,
       fotoUrl: sesionUsuario.usuario.imagenPerfil,
+      imagenPerfil: null,
     }));
   }, []);
 
