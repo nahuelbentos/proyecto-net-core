@@ -11,3 +11,11 @@ export const guardarCurso = async (curso, imagen) => {
     return await Promise.all([promesaCurso]);
   }
 };
+
+export const paginacionCurso = (paginador) =>
+  new Promise((resolve, reject) =>
+    httpClient
+      .post('/cursos/report', paginador)
+      .then((response) => resolve(response))
+      .catch((error) => reject(error))
+  );

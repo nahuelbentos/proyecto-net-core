@@ -14,7 +14,7 @@ namespace Aplicacion.Documentos
   {
     public class Ejecuta : IRequest
     {
-      public Guid ObjetoReferencia { get; set; }
+      public Guid? ObjetoReferencia { get; set; }
       public string Data { get; set; }
       public string Nombre { get; set; }
       public string Extension { get; set; }
@@ -49,7 +49,7 @@ namespace Aplicacion.Documentos
             Contenido = Convert.FromBase64String(request.Data),
             Nombre = request.Nombre,
             Extension = request.Extension,
-            ObjetoReferencia = request.ObjetoReferencia,
+            ObjetoReferencia = request.ObjetoReferencia ?? Guid.Empty,
             FechaCreacion = DateTime.UtcNow,
           };
 
@@ -60,7 +60,7 @@ namespace Aplicacion.Documentos
           documento.Contenido = Convert.FromBase64String(request.Data);
           documento.Nombre = request.Nombre;
           documento.Extension = request.Extension;
-          documento.ObjetoReferencia = request.ObjetoReferencia;
+          documento.ObjetoReferencia = request.ObjetoReferencia ?? Guid.Empty;
           documento.FechaCreacion = DateTime.UtcNow;
         }
 

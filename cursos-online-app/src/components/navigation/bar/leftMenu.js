@@ -18,7 +18,7 @@ export const LeftMenu = ({ classes }) => (
         <i className="material-icons"> add_box</i>
         <ListItemText classes={{ primary: classes.listItemText }} primary="Crear Curso"></ListItemText>
       </ListItem>
-      <ListItem button component={Link} to="/curso/lista">
+      <ListItem button component={Link} to="/curso/paginador">
         <i className="material-icons"> menu_book</i>
         <ListItemText classes={{ primary: classes.listItemText }} primary="Lista Cursos"></ListItemText>
       </ListItem>

@@ -11,6 +11,7 @@ import { obtenerUsuarioActual } from './actions/UsuarioAction';
 import AppNavbar from './components/navigation/AppNavbar';
 import SecureRoute from './components/navigation/SecureRoute';
 import NuevoCurso from './components/cursos/NuevoCurso';
+import PaginadorCurso from './components/cursos/PaginadorCurso';
 
 function App() {
   const [{ sesionUsuario, openSnackbar }, dispatch] = useStateValue();
@@ -53,6 +54,7 @@ function App() {
 
               <SecureRoute exact path="/auth/profile" component={ProfileUser} />
               <SecureRoute exact path="/curso/nuevo" component={NuevoCurso} />
+              <SecureRoute exact path="/curso/paginador" component={PaginadorCurso} />
               <SecureRoute exact path="" component={ProfileUser} />
             </Switch>
           </Grid>

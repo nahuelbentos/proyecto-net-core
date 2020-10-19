@@ -70,6 +70,7 @@ namespace Aplicacion.Seguridad
         {
           throw new ManejadorExcepcion(HttpStatusCode.InternalServerError, new { mensaje = "Ya existe ese mail en otro usuario" });
         }
+
         if (request.ImagenPerfil != null)
         {
 
